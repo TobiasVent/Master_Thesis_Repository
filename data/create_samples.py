@@ -66,7 +66,7 @@ output_dir = "/data/stu231428/Transformed_data_LSTM"
 print("Saving  features, targets, and metadata...")
 
 with open(f"{output_dir}/samples_train_global_0.005.pkl", "wb") as f:
-    pickle.dump(features, f)
+    pickle.dump(all_samples, f)
 
 # with open(f"{output_dir}/targets_train_global_0.005.pkl", "wb") as f:
 #     pickle.dump(targets, f)
