@@ -2,6 +2,9 @@ import pickle
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+from collections import namedtuple
+
+
 
 # Load test dataset
 print("Loading and sorting  dataset...")
@@ -31,7 +34,8 @@ window_size = 4
 features = []
 targets = []
 meta = []
-
+all_samples = []
+Sample = namedtuple("Sample", ["features", "target", "meta"])
 # Group by location and apply sliding window with progress bar
 print("Generating features and targets from  data...")
 grouped = df.groupby(['nav_lat', 'nav_lon'])
@@ -44,27 +48,30 @@ for (lat, lon), group in tqdm(grouped, desc="Processing  locations"):
         X = window[feature_columns].values
         y = window.iloc[-1]['co2flux']
 
-        features.append(X)
-        targets.append(y)
+        #features.append(X)
+        #targets.append(y)
 
         sample_info = {
             'nav_lat': lat,
             'nav_lon': lon,
             'time_counter': window.iloc[-1]['time_counter']
         }
-        meta.append(sample_info)
+        #meta.append(sample_info)
+        sample = Sample(X, y, sample_info)
+        all_samples.append(sample)
+
 
 # Save processed  data
 output_dir = "/data/stu231428/Transformed_data_LSTM"
 print("Saving  features, targets, and metadata...")
 
-with open(f"{output_dir}/features_train_global_0.005.pkl", "wb") as f:
+with open(f"{output_dir}/samples_train_global_0.005.pkl", "wb") as f:
     pickle.dump(features, f)
 
-with open(f"{output_dir}/targets_train_global_0.005.pkl", "wb") as f:
-    pickle.dump(targets, f)
+# with open(f"{output_dir}/targets_train_global_0.005.pkl", "wb") as f:
+#     pickle.dump(targets, f)
 
-with open(f"{output_dir}/meta_train_global_0.005.pkl", "wb") as f:
-    pickle.dump(meta, f)
+# with open(f"{output_dir}/meta_train_global_0.005.pkl", "wb") as f:
+#     pickle.dump(meta, f)
 
 
